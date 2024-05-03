@@ -4,7 +4,8 @@
   "main": "build/index.js",
   "scripts": {
     "test": "npx tsc && node .",
-    "start": "node ."
+    "start": "node .",
+    "build": "npx tsc"
   },
   "author": "Paurush Sinha",
   "license": "ISC",
@@ -16,7 +17,8 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "jsdom": "^24.0.0",
-    "mysql": "^2.18.1"
+    "mysql2": "^3.9.7"
   }
 }
