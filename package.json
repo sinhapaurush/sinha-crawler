@@ -1,0 +1,22 @@
+{
+  "name": "flexfind",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "npx tsc && node .",
+    "start": "node ."
+  },
+  "author": "Paurush Sinha",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/jsdom": "^21.1.6",
+    "@types/mysql": "^2.15.26",
+    "@types/node": "^20.12.8",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "jsdom": "^24.0.0",
+    "mysql": "^2.18.1"
+  }
+}
