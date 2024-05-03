@@ -1,3 +1,4 @@
+import { db } from "..";
 import { crawlLink } from "./crawler";
 import { queue } from "./queue";
 export async function crawlAllLinks() {
@@ -8,4 +9,5 @@ export async function crawlAllLinks() {
       console.error(`Error Occured in Crawling ${queue[i].url}`);
     }
   }
+  db.close();
 }

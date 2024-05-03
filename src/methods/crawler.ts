@@ -6,19 +6,21 @@ import { searchInQueue } from "./queue";
 import { QueueNode } from "../types/queue";
 import { queue } from "./queue";
 import { calculateScore } from "./score";
-
+import { db } from "../index";
+import { sanitize } from "./sanitize";
 /**
  * Crawls page
  * @param url Accepts an Absolute URL
  * @author Paurush Sinha
  */
+
 export async function crawlLink(url: string) {
   const response = await fetch(url);
   const page = await response.text();
 
   // CHECKING IF THE PAGE RETURNED ERROR 404
   if (response.status !== 200) return;
-  
+
   const dom = new JSDOM(page);
   const doc = dom.window.document;
 
@@ -73,15 +75,21 @@ export async function crawlLink(url: string) {
 
   // MAKING PAGE DATA OBJECT
   const pageData: CrawledData = {
-    title: title,
-    content: textContent,
-    heading: h1,
-    hlevels: allHeadings,
+    title: sanitize(title),
+    content: sanitize(textContent),
+    heading: sanitize(h1),
+    hlevels: sanitize(allHeadings),
     url: url,
-    keywords: keywords,
-    description: description,
+    keywords: sanitize(keywords),
+    description: sanitize(description),
     score: score,
   };
+  const domain = new URL(pageData.url).hostname;
+  db.overideDomain(domain, 1, "/favicon.ico")
+    .then((id: number) => {
+      db.insertPage(pageData, id);
+    })
+    .catch((e) => console.log(e));
   console.log(pageData.title, pageData.url);
 
   const allAnchors: NodeListOf<HTMLAnchorElement> = doc.querySelectorAll("a");
@@ -91,7 +99,10 @@ export async function crawlLink(url: string) {
     const isNofollow: boolean =
       anchor.getAttribute("rel")?.includes("nofollow") ?? false;
 
-    if (href.trim() !== "" && !href.startsWith("#")) {
+    if (
+      !href.includes("@") ||
+      (href.trim() !== "" && !href.startsWith("#") && !href.includes(".css"))
+    ) {
       const absLink: string = convertToAbsoluteLink(href, url);
       const indexInQueue: number = searchInQueue(absLink);
       if (indexInQueue !== -1) {
