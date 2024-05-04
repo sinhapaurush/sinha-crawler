@@ -72,6 +72,8 @@ export class Database {
     }: CrawledData,
     id: number
   ) {
+    description = description.slice(0, 249);
+
     try {
       const response: RowDataPacket[] = await this.runQuery<RowDataPacket[]>(
         `SELECT id FROM page WHERE url = '${url}'`

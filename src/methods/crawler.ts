@@ -8,6 +8,7 @@ import { queue } from "./queue";
 import { calculateScore } from "./score";
 import { db } from "../index";
 import { sanitize } from "./sanitize";
+import getFaviconURL from "./faviconIdentifier";
 /**
  * Crawls page
  * @param url Accepts an Absolute URL
@@ -22,12 +23,13 @@ export async function crawlLink(url: string) {
   if (response.status !== 200) return;
 
   const dom = new JSDOM(page);
-  const doc = dom.window.document;
+  const doc: Document = dom.window.document;
 
   // Removing JS from DOM
   const scripts: NodeListOf<HTMLScriptElement> = doc.querySelectorAll("script");
   scripts.forEach((script: HTMLScriptElement) => script.remove());
 
+  const faviconUrl = await getFaviconURL(doc, url);
   // REMOVING CSS FROM DOM
   const styles: NodeListOf<HTMLStyleElement> = doc.querySelectorAll("style");
   styles.forEach((style: HTMLStyleElement) => style.remove());
@@ -85,7 +87,7 @@ export async function crawlLink(url: string) {
     score: score,
   };
   const domain = new URL(pageData.url).hostname;
-  db.overideDomain(domain, 1, "/favicon.ico")
+  db.overideDomain(domain, 1, faviconUrl)
     .then((id: number) => {
       db.insertPage(pageData, id);
     })
