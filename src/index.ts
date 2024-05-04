@@ -9,7 +9,7 @@ import { crawlAllLinks } from "./methods/queueIteraor";
 
 export const db = new Database();
 // Adds an URL in Queue which acts as an starting point for the crawler.
-addUrlToQueue("https://react.dev/");
+addUrlToQueue("https://upsc.gov.in/");
 
 // Start crawling the links in the queue.
 crawlAllLinks();

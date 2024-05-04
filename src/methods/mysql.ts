@@ -17,6 +17,7 @@ export class Database {
       user: process.env.MYSQL_USER ?? "root",
       password: process.env.MYSQL_PASS ?? "",
       database: process.env.MYSQL_DATABASE ?? "search",
+      port: typeof process.env.PORT === "string" ? parseInt(process.env.PORT) : process.env.PORT ?? 8080
     });
     this.connection.connect((err) => {
       if (err) console.log(err);
